@@ -94,7 +94,7 @@ package regen
 
 import (
 	"fmt"
-	"math/rand"
+	mrand "math/rand"
 	"regexp/syntax"
 )
 
@@ -115,7 +115,7 @@ type GeneratorArgs struct {
 	// May be nil.
 	// Used to seed a custom RNG that is a lot faster than the default implementation.
 	// See http://vigna.di.unimi.it/ftp/papers/xorshift.pdf.
-	RngSource rand.Source
+	RngSource mrand.Source
 
 	// Default is 0 (syntax.POSIX).
 	Flags syntax.Flags
@@ -132,18 +132,18 @@ type GeneratorArgs struct {
 	CaptureGroupHandler CaptureGroupHandler
 
 	// Used by generators.
-	rng *rand.Rand
+	rng *mrand.Rand
 }
 
 func (a *GeneratorArgs) initialize() error {
 	var seed int64
 	if nil == a.RngSource {
-		seed = rand.Int63()
+		seed = mrand.Int63()
 	} else {
 		seed = a.RngSource.Int63()
 	}
 	rngSource := xorShift64Source(seed)
-	a.rng = rand.New(&rngSource)
+	a.rng = mrand.New(&rngSource)
 
 	// unicode groups only allowed with Perl
 	if (a.Flags&syntax.UnicodeGroups) == syntax.UnicodeGroups && (a.Flags&syntax.Perl) != syntax.Perl {
@@ -168,7 +168,7 @@ func (a *GeneratorArgs) initialize() error {
 
 // Rng returns the random number generator used by generators.
 // Panics if called before the GeneratorArgs has been initialized by NewGenerator.
-func (a *GeneratorArgs) Rng() *rand.Rand {
+func (a *GeneratorArgs) Rng() *mrand.Rand {
 	if a.rng == nil {
 		panic("GeneratorArgs has not been initialized by NewGenerator yet")
 	}

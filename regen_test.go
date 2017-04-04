@@ -18,7 +18,7 @@ package regen
 
 import (
 	"fmt"
-	"math/rand"
+	mrand "math/rand"
 	"os"
 	"regexp"
 	"regexp/syntax"
@@ -57,7 +57,7 @@ func ExampleNewGenerator() {
 	// will always be the same across different runs of the program.
 	// Use a more random seed for real use (e.g. time-based).
 	generator, _ := NewGenerator(pattern, &GeneratorArgs{
-		RngSource: rand.NewSource(0),
+		RngSource: mrand.NewSource(0),
 	})
 
 	str := generator.Generate()
@@ -200,7 +200,7 @@ func TestGenEmpty(t *testing.T) {
 
 	Convey("Empty", t, func() {
 		args := &GeneratorArgs{
-			RngSource: rand.NewSource(0),
+			RngSource: mrand.NewSource(0),
 		}
 		ConveyGeneratesStringMatching(args, "", "^$")
 	})
@@ -240,7 +240,7 @@ func TestGenStringStartEnd(t *testing.T) {
 
 	Convey("String start/end", t, func() {
 		args := &GeneratorArgs{
-			RngSource: rand.NewSource(0),
+			RngSource: mrand.NewSource(0),
 			Flags:     0,
 		}
 
@@ -279,7 +279,7 @@ func TestGenStar(t *testing.T) {
 		Convey("HitsDefaultMin", func() {
 			regexp := "a*"
 			args := &GeneratorArgs{
-				RngSource: rand.NewSource(0),
+				RngSource: mrand.NewSource(0),
 			}
 			counts := generateLenHistogram(regexp, DefaultMaxUnboundedRepeatCount, args)
 
@@ -289,7 +289,7 @@ func TestGenStar(t *testing.T) {
 		Convey("HitsCustomMin", func() {
 			regexp := "a*"
 			args := &GeneratorArgs{
-				RngSource:               rand.NewSource(0),
+				RngSource:               mrand.NewSource(0),
 				MinUnboundedRepeatCount: 200,
 			}
 			counts := generateLenHistogram(regexp, DefaultMaxUnboundedRepeatCount, args)
@@ -303,7 +303,7 @@ func TestGenStar(t *testing.T) {
 		Convey("HitsDefaultMax", func() {
 			regexp := "a*"
 			args := &GeneratorArgs{
-				RngSource: rand.NewSource(0),
+				RngSource: mrand.NewSource(0),
 			}
 			counts := generateLenHistogram(regexp, DefaultMaxUnboundedRepeatCount, args)
 
@@ -314,7 +314,7 @@ func TestGenStar(t *testing.T) {
 		Convey("HitsCustomMax", func() {
 			regexp := "a*"
 			args := &GeneratorArgs{
-				RngSource:               rand.NewSource(0),
+				RngSource:               mrand.NewSource(0),
 				MaxUnboundedRepeatCount: 200,
 			}
 			counts := generateLenHistogram(regexp, 200, args)
@@ -397,7 +397,7 @@ func TestGenRepeat(t *testing.T) {
 			Convey("HitsDefaultMax", func() {
 				regexp := "a{0,}"
 				args := &GeneratorArgs{
-					RngSource: rand.NewSource(0),
+					RngSource: mrand.NewSource(0),
 				}
 				counts := generateLenHistogram(regexp, DefaultMaxUnboundedRepeatCount, args)
 
@@ -408,7 +408,7 @@ func TestGenRepeat(t *testing.T) {
 			Convey("HitsCustomMax", func() {
 				regexp := "a{0,}"
 				args := &GeneratorArgs{
-					RngSource:               rand.NewSource(0),
+					RngSource:               mrand.NewSource(0),
 					MaxUnboundedRepeatCount: 200,
 				}
 				counts := generateLenHistogram(regexp, 200, args)
@@ -421,7 +421,7 @@ func TestGenRepeat(t *testing.T) {
 		Convey("HitsMin", func() {
 			regexp := "a{0,3}"
 			args := &GeneratorArgs{
-				RngSource: rand.NewSource(0),
+				RngSource: mrand.NewSource(0),
 			}
 			counts := generateLenHistogram(regexp, 3, args)
 
@@ -432,7 +432,7 @@ func TestGenRepeat(t *testing.T) {
 		Convey("HitsMax", func() {
 			regexp := "a{0,3}"
 			args := &GeneratorArgs{
-				RngSource: rand.NewSource(0),
+				RngSource: mrand.NewSource(0),
 			}
 			counts := generateLenHistogram(regexp, 3, args)
 
@@ -443,7 +443,7 @@ func TestGenRepeat(t *testing.T) {
 		Convey("IsWithinBounds", func() {
 			regexp := "a{5,10}"
 			args := &GeneratorArgs{
-				RngSource: rand.NewSource(0),
+				RngSource: mrand.NewSource(0),
 			}
 			counts := generateLenHistogram(regexp, 10, args)
 

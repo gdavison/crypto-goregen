@@ -17,7 +17,7 @@ limitations under the License.
 package regen
 
 import (
-	"math/rand"
+	mrand "math/rand"
 	"testing"
 )
 
@@ -30,7 +30,7 @@ X-Auth-Token: [a-zA-Z0-9+/]{64}
 ){3,15}[A-Za-z0-9+/]{60}([A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)
 `
 
-var rngSource = rand.NewSource(42)
+var rngSource = mrand.NewSource(42)
 
 // Benchmarks the code that creates generators.
 // Doesn't actually run the generators.
@@ -50,7 +50,7 @@ func BenchmarkComplexCreation(b *testing.B) {
 func BenchmarkLargeRepeatCreateSerial(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		NewGenerator(`a{999}`, &GeneratorArgs{
-			RngSource: rand.NewSource(0),
+			RngSource: mrand.NewSource(0),
 		})
 	}
 }
@@ -72,7 +72,7 @@ func BenchmarkComplexGeneration(b *testing.B) {
 
 func BenchmarkLargeRepeatGenerateSerial(b *testing.B) {
 	generator, err := NewGenerator(`a{999}`, &GeneratorArgs{
-		RngSource: rand.NewSource(0),
+		RngSource: mrand.NewSource(0),
 	})
 	if err != nil {
 		b.Fatal(err)
