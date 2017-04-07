@@ -3,6 +3,7 @@ package regen
 import (
 	crand "crypto/rand"
 	"io"
+	"math"
 )
 
 type rand struct {
@@ -20,7 +21,13 @@ func newRand(reader io.Reader) *rand {
 	}
 }
 
-// Returns a non-negative random number in [0,max) from the crypto/rand source. Panics if max <= 0
+// Int31 returns a non-negative pseudo-random 31-bit integer as an int32.
+func (r rand) Int31() int32 {
+	return r.readBytes(4)
+}
+
+// Int31n returns, as an int32, a non-negative pseudo-random number in [0,n).
+// It panics if n <= 0.
 func (r rand) Int31n(max int32) int32 {
 	if max <= 0 {
 		panic("Max must be greater than 0")
@@ -35,6 +42,15 @@ func (r rand) Int31n(max int32) int32 {
 		v = r.readBytes(bytesToRead)
 	}
 	return v % max
+}
+
+// Intn returns, as an int, a non-negative pseudo-random number in [0,n). Currently only supports int32 range.
+// It panics if n <= 0.
+func (r rand) Intn(max int) int {
+	if max > math.MaxInt32 {
+		panic("Max is outside of int32 range")
+	}
+	return int(r.Int31n(int32(max)))
 }
 
 // Reads byteCount bytes from the internal Reader

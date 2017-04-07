@@ -38,8 +38,7 @@ func BenchmarkComplexCreation(b *testing.B) {
 	// Create everything here to save allocations in the loop.
 	//args := &GeneratorArgs{rngSource, 0, NewSerialExecutor()}
 	args := &GeneratorArgs{
-		RngSource: rngSource,
-		Flags:     0,
+		Flags: 0,
 	}
 
 	for i := 0; i < b.N; i++ {
@@ -49,16 +48,12 @@ func BenchmarkComplexCreation(b *testing.B) {
 
 func BenchmarkLargeRepeatCreateSerial(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		NewGenerator(`a{999}`, &GeneratorArgs{
-			RngSource: mrand.NewSource(0),
-		})
+		NewGenerator(`a{999}`, &GeneratorArgs{})
 	}
 }
 
 func BenchmarkComplexGeneration(b *testing.B) {
-	args := &GeneratorArgs{
-		RngSource: rngSource,
-	}
+	args := &GeneratorArgs{}
 	generator, err := NewGenerator(BigFancyRegexp, args)
 	if err != nil {
 		panic(err)
@@ -71,9 +66,7 @@ func BenchmarkComplexGeneration(b *testing.B) {
 }
 
 func BenchmarkLargeRepeatGenerateSerial(b *testing.B) {
-	generator, err := NewGenerator(`a{999}`, &GeneratorArgs{
-		RngSource: mrand.NewSource(0),
-	})
+	generator, err := NewGenerator(`a{999}`, &GeneratorArgs{})
 	if err != nil {
 		b.Fatal(err)
 	}

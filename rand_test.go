@@ -2,6 +2,7 @@ package regen
 
 import (
 	"bytes"
+	"math"
 	"testing"
 	"testing/quick"
 )
@@ -125,4 +126,24 @@ func TestReadingFourBytes(t *testing.T) {
 	if err := quick.Check(assertion, nil); err != nil {
 		t.Error(err)
 	}
+}
+
+func TestIntnShouldPanicWhenMaxZero(t *testing.T) {
+	defer func() {
+		if r := recover(); r == nil {
+			t.Fatal("Expected Intn() to panic")
+		}
+	}()
+	theRand := NewRand()
+	theRand.Intn(0)
+}
+
+func TestIntnHasMaxRangeInt32(t *testing.T) {
+	defer func() {
+		if r := recover(); r == nil {
+			t.Fatal("Expected Intn() to panic")
+		}
+	}()
+	theRand := NewRand()
+	theRand.Intn(int(math.MaxInt32 + 1))
 }
