@@ -1,5 +1,6 @@
 /*
 Copyright 2014 Zachary Klippenstein
+Copyright 2017 Graham Davison
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -52,17 +53,6 @@ Concurrent Use
 
 A generator can safely be used from multiple goroutines without locking.
 
-A large bottleneck with running generators concurrently is actually the entropy source. Sources returned from
-rand.NewSource() are slow to seed, and not safe for concurrent use. Instead, the source passed in GeneratorArgs
-is used to seed an XorShift64 source (algorithm from the paper at http://vigna.di.unimi.it/ftp/papers/xorshift.pdf).
-This source only uses a single variable internally, and is much faster to seed than the default source. One
-source is created per call to NewGenerator. If no source is passed in, the default source is used to seed.
-
-The source is not locked and does not use atomic operations, so there is a chance that multiple goroutines using
-the same source may get the same output. While obviously not cryptographically secure, I think the simplicity and performance
-benefit outweighs the risk of collisions. If you really care about preventing this, the solution is simple: don't
-call a single Generator from multiple goroutines.
-
 Benchmarks
 
 Benchmarks are included for creating and running generators for limited-length,
@@ -82,13 +72,6 @@ The repetitive benchmarks use the regex
 	a{999}
 
 See regen_benchmarks_test.go for more information.
-
-On my mid-2014 MacBook Pro (2.6GHz Intel Core i5, 8GB 1600MHz DDR3),
-the results of running the benchmarks with minimal load are:
-	BenchmarkComplexCreation-4                       200	   8322160 ns/op
-	BenchmarkComplexGeneration-4                   10000	    153625 ns/op
-	BenchmarkLargeRepeatCreateSerial-4  	        3000	    411772 ns/op
-	BenchmarkLargeRepeatGenerateSerial-4	        5000	    291416 ns/op
 */
 package regen
 
